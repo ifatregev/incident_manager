@@ -1,4 +1,4 @@
-export type Severity = "low" | "medium" | "high" | "critical";
+export type Severity = "SEV1" | "SEV2" | "SEV3";
 
 export interface Incident {
   id: number;
@@ -12,6 +12,11 @@ export interface Incident {
   severity: Severity | null;
   slackChannelId: string;
   service: string | null;
+  detectedAt: string | null;
+  resolvedAt: string | null;
+  affectedSystems: string[] | null;
+  actionItems: string[] | null;
+  rootCause: string | null;
 }
 
 export interface IncidentUpdate {
@@ -47,13 +52,19 @@ export interface CreateIncidentUpdatePayload {
   ownerName?: string;
 }
 
-export interface OpenAIIncidentAnalysis {
-  summary: string;
+export interface GeminiIncidentAnalysis {
+  title: string;
   severity: Severity;
-  service: string;
-  updates: Array<{
-    description: string;
+  summary: string;
+  started_at: string;
+  detected_at: string;
+  resolved_at: string | null;
+  affected_systems: string[];
+  timeline: Array<{
     timestamp: string;
-    owner_name: string;
+    event: string;
+    actor: string;
   }>;
+  root_cause: string | null;
+  action_items: string[];
 }

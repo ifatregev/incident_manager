@@ -15,6 +15,11 @@ export const incident = pgTable(
     severity: text("severity"),
     slackChannelId: text("slack_channel_id").notNull(),
     service: text("service"),
+    detectedAt: timestamp("detected_at", { withTimezone: true }),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+    affectedSystems: text("affected_systems").array(),
+    actionItems: text("action_items").array(),
+    rootCause: text("root_cause"),
   },
   (table) => [
     index("incident_open_channel_idx")

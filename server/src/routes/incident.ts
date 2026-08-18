@@ -4,10 +4,11 @@ import { z } from "zod";
 import { db } from "../db/client.ts";
 import { incident, incidentUpdate } from "../db/schema.ts";
 import { ApiError, asyncHandler, parseIntParam } from "../lib/http.ts";
+import { createIncident } from "../services/incidents.ts";
 
 const router = Router();
 
-const severityEnum = z.enum(["low", "medium", "high", "critical"]);
+const severityEnum = z.enum(["SEV1", "SEV2", "SEV3"]);
 
 const createIncidentSchema = z
   .object({
@@ -78,19 +79,16 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     const parsed = createIncidentSchema.parse(req.body);
-    const [row] = await db
-      .insert(incident)
-      .values({
-        slackChannelId: parsed.slackChannelId,
-        slackStart: parsed.slackStart ? new Date(parsed.slackStart) : new Date(),
-        slackEnd: parsed.slackEnd ? new Date(parsed.slackEnd) : undefined,
-        title: parsed.title,
-        description: parsed.description,
-        ownerName: parsed.ownerName,
-        severity: parsed.severity,
-        service: parsed.service,
-      })
-      .returning();
+    const row = await createIncident({
+      slackChannelId: parsed.slackChannelId,
+      slackStart: parsed.slackStart ? new Date(parsed.slackStart) : undefined,
+      slackEnd: parsed.slackEnd ? new Date(parsed.slackEnd) : undefined,
+      title: parsed.title,
+      description: parsed.description,
+      ownerName: parsed.ownerName,
+      severity: parsed.severity,
+      service: parsed.service,
+    });
     res.status(201).json(row);
   })
 );

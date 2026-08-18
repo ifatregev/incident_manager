@@ -4,6 +4,7 @@ import express from "express";
 import { sql } from "drizzle-orm";
 import { db } from "./db/client.ts";
 import incidentRouter from "./routes/incident.ts";
+import slackRouter from "./routes/slack.ts";
 import { errorMiddleware } from "./lib/http.ts";
 
 const app = express();
@@ -21,6 +22,7 @@ app.get("/api/health", async (_req, res) => {
 });
 
 app.use("/api/incident", incidentRouter);
+app.use("/api/slack", slackRouter);
 
 app.use(errorMiddleware);
 
