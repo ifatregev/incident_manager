@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: incident_hub
+      POSTGRES_PASSWORD: incident_hub
+      POSTGRES_DB: incident_hub
+    ports:
+      - "5433:5432"
+    volumes:
+      - incident_hub_pgdata:/var/lib/postgresql/data
+
+volumes:
+  incident_hub_pgdata:
