@@ -3,6 +3,8 @@ import cors from "cors";
 import express from "express";
 import { sql } from "drizzle-orm";
 import { db } from "./db/client.ts";
+import incidentRouter from "./routes/incident.ts";
+import { errorMiddleware } from "./lib/http.ts";
 
 const app = express();
 const port = process.env.PORT ?? 4000;
@@ -17,6 +19,10 @@ app.get("/api/health", async (_req, res) => {
   await db.execute(sql`select 1`);
   res.json({ ok: true });
 });
+
+app.use("/api/incident", incidentRouter);
+
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
